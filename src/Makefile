@@ -1,5 +1,5 @@
 UNO_CFLAGS := -mmcu=atmega328p -DF_CPU=16000000L -s -Os
-UNO_AVRDUDE := -p m328p -b 115200 -P/dev/ttyACM0
+UNO_AVRDUDE := -c arduino -p m328p -b 115200 -P/dev/ttyACM0
 
 CC=avr-gcc
 CXX=avr-g++
@@ -18,6 +18,7 @@ CFLAGS_ELF_OUTPUT=$(UNO_CFLAGS) -Wall -Os $(LIB)
 CFLAGS=-c $(UNO_CFLAGS) $(DEFS) -Wall -Os $(INC)
 
 AVRDUDE_VERBOSITY=
+AVRDUDE_CONF=../etc/avrdude.conf
 STRIP=avr-strip
 
 .SUFFIXES: .cpp .c .o
@@ -39,7 +40,7 @@ babymcast.elf: $(OBJ)
 	$(CC) $(UNO_CFLAGS) $(LIB) babymcast.o -o babymcast.elf $(LDLIBS)
 
 upload: babymcast.hex
-	avrdude $(AVRDUDE_VERBOSITY) -q -q $(UNO_AVRDUDE) -D -Uflash:w:babymcast.hex:i
+	sudo avrdude $(AVRDUDE_VERBOSITY) -C $(AVRDUDE_CONF) -q -q $(UNO_AVRDUDE) -D -Uflash:w:babymcast.hex:i
 
 clean:
 	rm -f *.o
