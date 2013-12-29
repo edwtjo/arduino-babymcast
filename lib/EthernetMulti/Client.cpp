@@ -5,7 +5,11 @@ extern "C" {
   #include "string.h"
 }
 
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "Arduino.h"    // for digitalRead, digitalWrite, etc
+#else
 #include "WProgram.h"
+#endif
 
 #include "Ethernet.h"
 #include "Client.h"
@@ -54,9 +58,9 @@ uint8_t Client::connect() {
   return 1;
 }
 
-void Client::write(uint8_t b) {
+size_t Client::write(uint8_t b) {
   if (_sock != MAX_SOCK_NUM)
-    send(_sock, &b, 1);
+    return send(_sock, &b, 1);
 }
 
 void Client::write(const char *str) {
@@ -64,9 +68,10 @@ void Client::write(const char *str) {
     send(_sock, (const uint8_t *)str, strlen(str));
 }
 
-void Client::write(const uint8_t *buf, size_t size) {
+size_t Client::write(const uint8_t *buf, size_t size) {
   if (_sock != MAX_SOCK_NUM)
     send(_sock, buf, size);
+  return size;
 }
 
 int Client::available() {
@@ -118,7 +123,7 @@ void Client::stop() {
 
 uint8_t Client::connected() {
   if (_sock == MAX_SOCK_NUM) return 0;
-  
+
   uint8_t s = status();
   return !(s == SnSR::LISTEN || s == SnSR::CLOSED || s == SnSR::FIN_WAIT ||
     (s == SnSR::CLOSE_WAIT && !available()));

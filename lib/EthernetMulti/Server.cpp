@@ -23,7 +23,7 @@ void Server::begin()
       EthernetClass::_server_port[sock] = _port;
       break;
     }
-  }  
+  }
 }
 
 void Server::accept()
@@ -36,11 +36,11 @@ void Server::accept()
     if (EthernetClass::_server_port[sock] == _port) {
       if (client.status() == SnSR::LISTEN) {
         listening = 1;
-      } 
+      }
       else if (client.status() == SnSR::CLOSE_WAIT && !client.available()) {
         client.stop();
       }
-    } 
+    }
   }
 
   if (!listening) {
@@ -67,17 +67,17 @@ Client Server::available()
   return Client(MAX_SOCK_NUM);
 }
 
-void Server::write(uint8_t b) 
+size_t Server::write(uint8_t b)
 {
-  write(&b, 1);
+  return write(&b, 1);
 }
 
-void Server::write(const char *str) 
+void Server::write(const char *str)
 {
   write((const uint8_t *)str, strlen(str));
 }
 
-void Server::write(const uint8_t *buffer, size_t size) 
+size_t Server::write(const uint8_t *buffer, size_t size)
 {
   accept();
 
@@ -89,4 +89,5 @@ void Server::write(const uint8_t *buffer, size_t size)
       client.write(buffer, size);
     }
   }
+  return size;
 }

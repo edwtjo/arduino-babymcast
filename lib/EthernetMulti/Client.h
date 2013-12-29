@@ -17,9 +17,9 @@ public:
 
   uint8_t status();
   uint8_t connect();
-  virtual void write(uint8_t);
+  virtual size_t write(uint8_t);
   virtual void write(const char *str);
-  virtual void write(const uint8_t *buf, size_t size);
+  virtual size_t write(const uint8_t *buf, size_t size);
   virtual int available();
   virtual int read();
   virtual int peek();
