@@ -82,8 +82,8 @@ void setup() {
 
 void loop() {
   if(analogRead(pins.audioA0) >= 100) {
-    collectSamples();
     babyScream();
+    collectSamples();
     heardBaby = 0;
   } else {
     Serial.print(".");
