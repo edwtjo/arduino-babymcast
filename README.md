@@ -27,3 +27,14 @@ the avr* toolset.
   - Microphone with gain control(variable resistor)[SKU135533]
 
 SKU135533: http://dx.com/p/arduino-microphone-sound-detection-sensor-module-red-135533
+
+## Pinout
+
+It is pretty obvious from the sources but just to be extremely explicit:
+
+  MIC.A0 -> UNO.A0  (analog read)
+  MIC.D0 -> UNO.D2  (digital read)
+  MIC.+  -> UNO.3V3 (power)
+  MIC.G  -> UNO.G   (ground)
+
+
