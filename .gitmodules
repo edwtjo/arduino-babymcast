@@ -1,0 +1,3 @@
+[submodule "vendor/Arduino"]
+	path = vendor/Arduino
+	url = https://github.com/arduino/Arduino.git
