@@ -34,7 +34,5 @@ It is pretty obvious from the sources but just to be extremely explicit:
 
   - MIC.A0 -> UNO.A0  (analog read)
   - MIC.D0 -> UNO.D2  (digital read)
-  - MIC.+  -> UNO.3V3 (power)
+  - MIC.+  <- UNO.3V3 (power)
   - MIC.G  -> UNO.G   (ground)
-
-
