@@ -6,12 +6,13 @@
 
 /* LOCAL_OSI_LVL2 */
 byte unoMac[] = {
-  0xB1, 0x6B, 0x00, 0xB1, 0x1E, 0xE5 // babies love big boobiees..
+  0x02, 0xB1, 0x6B, 0x00, 0xB1, 0xE5 // babies love 2 big boobies..
 };
 EthernetUDP BabyIGMP;
 
 /* LOCAL_OSI_LVL3 */
-IPAddress unoIp(192,168,2,65); /* static config */
+/* STATIC FALLBACK CONFIG */
+IPAddress unoIp(192,168,2,65);
 IPAddress gwIP(192,168,2,60);
 IPAddress netM(255,255,255,0);
 IPAddress dnsIP(192,168,2,60);
