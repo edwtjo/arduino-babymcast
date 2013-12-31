@@ -8,19 +8,17 @@
 byte unoMac[] = {
   0xB1, 0x6B, 0x00, 0xB1, 0x1E, 0xE5 // babies love big boobiees..
 };
+EthernetUDP BabyIGMP;
 
 /* LOCAL_OSI_LVL3 */
-byte unoIp[] = {
-  192, 168, 2, 65
-};
+IPAddress unoIp(192, 168, 2, 65); /* static config */
 
 /* REMOTE IP/PORT */
-byte babyMcastIp[] = {
-  239, 255, 47, 79
-}; /* this multicast group is
-      for screaming babies. */
+IPAddress babyMcastIp(239,255,47,79); /* this multicast group is for
+                                         screaming babies. */
 unsigned int babyMcastPort = 61391; /* this multicast port is to
                                        transfer baby scream detections. */
+
 typedef struct {
   const int audioA0;
   const int audioD0;
@@ -30,9 +28,11 @@ pins_t pins = {A0,0}; /* AudioA0 is connected to UNO A0 and
 
 const int hz = 124; /* sample rate */
 
-void writeUDP(char dat[]) {
-  // multicast udp message using the Udp monad.. no just kidding.
-  Udp.sendPacket(dat,babyMcastIp,babyMcastPort);
+void doBabyIGMP(char dat[]) {
+  // multicast udp message using the BabyIGMP monad.. no just kidding.
+  BabyIGMP.beginPacket(BabyIGMP.remoteIP(),BabyIGMP.remotePort());
+  BabyIGMP.write(dat);
+  BabyIGMP.endPacket();
 }
 
 /*
@@ -47,7 +47,7 @@ static void babyScreamDetect(void) {
 void babyScream() {
   char *msg = "WUÄÄÄ!!";
   Serial.println(msg);
-  writeUDP(msg);
+  doBabyIGMP(msg);
 }
 
 void collectSamples() {
@@ -71,11 +71,16 @@ void collectSamples() {
 void setup() {
   // 9600 baud serial line
   Serial.begin(9600);
-
+  while(!Serial) { /* we dont have a serial line */ }
   // networking
-  Ethernet.begin(unoMac,unoIp);
-  Udp.beginMulti(babyMcastPort,babyMcastIp);
-
+#ifndef __STATIC_IP__
+  if (Ethernet.begin(unoMac) == 0) { /* No DHCP */
+#endif
+    Ethernet.begin(unoMac,unoIp); /* static config, fallback */
+#ifndef __STATIC_IP__
+  }
+#endif
+  BabyIGMP.beginMulti(babyMcastIp, babyMcastPort);
   // register as an ISR
   attachInterrupt(pins.audioD0, babyScreamDetect, RISING);
 }
