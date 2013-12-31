@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+import socket
+import struct
+
+__mcast_group = '239.255.47.79'
+__mcast_port = 61391
+
+__socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+__socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+__socket.bind(('', __mcast_port))
+__membership_request = struct.pack(
+    '4sl',
+    socket.inet_aton(__mcast_group),
+    socket.INADDR_ANY)
+
+__socket.setsockopt(
+    socket.IPPROTO_IP,
+    socket.IP_ADD_MEMBERSHIP,
+    __membership_request)
+
+while True:
+    datgrams = __socket.recv(512)
+    print "WHOHO"
