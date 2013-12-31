@@ -11,7 +11,10 @@ byte unoMac[] = {
 EthernetUDP BabyIGMP;
 
 /* LOCAL_OSI_LVL3 */
-IPAddress unoIp(192, 168, 2, 65); /* static config */
+IPAddress unoIp(192,168,2,65); /* static config */
+IPAddress gwIP(192,168,2,60);
+IPAddress netM(255,255,255,0);
+IPAddress dnsIP(192,168,2,60);
 
 /* REMOTE IP/PORT */
 IPAddress babyMcastIp(239,255,47,79); /* this multicast group is for
@@ -73,15 +76,23 @@ void setup() {
   Serial.begin(9600);
   while(!Serial) { /* we dont have a serial line */ }
   // networking
+  Serial.println("Networking..");
 #ifndef __STATIC_IP__
   if (Ethernet.begin(unoMac) == 0) { /* No DHCP */
 #endif
-    Ethernet.begin(unoMac,unoIp); /* static config, fallback */
+    Serial.println("No DHCP, using static config");
+    Ethernet.begin(unoMac,unoIp,dnsIP,gwIP,netM); /* static config, fallback */
 #ifndef __STATIC_IP__
   }
 #endif
+  Serial.print("IP:"); Serial.print(Ethernet.localIP());
+  Serial.print(", NETMASK:"); Serial.print(Ethernet.subnetMask());
+  Serial.print(", GW:"); Serial.print(Ethernet.gatewayIP());
+  Serial.print(", DNS:"); Serial.println(Ethernet.dnsServerIP());
+  Serial.print("MCAST IP:"); Serial.println(babyMcastIp);
   BabyIGMP.beginMulti(babyMcastIp, babyMcastPort);
   // register as an ISR
+  Serial.println("Registering babyScreamDetect as an ISR on UNO.D2");
   attachInterrupt(pins.audioD0, babyScreamDetect, RISING);
 }
 
